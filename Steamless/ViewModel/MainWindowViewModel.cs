@@ -38,6 +38,7 @@ namespace Steamless.ViewModel
     using System.Collections.ObjectModel;
     using System.Diagnostics;
     using System.IO;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows;
@@ -50,6 +51,11 @@ namespace Steamless.ViewModel
         /// Internal data service instance.
         /// </summary>
         private readonly IDataService m_DataService;
+
+        /// <summary>
+        /// Internal logging service instance.
+        /// </summary>
+        private readonly LoggingService m_LoggingService;
 
         /// <summary>
         /// Internal thread used to process tasks.
@@ -76,6 +82,7 @@ namespace Steamless.ViewModel
         {
             // Store the data service instance..
             this.m_DataService = dataService;
+            this.m_LoggingService = logService;
 
             // Initialize the model..
             this.State = ApplicationState.Initializing;
@@ -106,7 +113,7 @@ namespace Steamless.ViewModel
             this.SteamlessVersion = await this.m_DataService.GetSteamlessVersion();
 
             // Load the Steamless plugins..
-            this.Tasks.Add(new LoadPluginsTask());
+            this.Tasks.Add(new LoadPluginsTask(this.m_DataService, this.m_LoggingService));
 
             // Start the application..
             this.Tasks.Add(new StartSteamlessTask());
@@ -130,6 +137,16 @@ namespace Steamless.ViewModel
                 {
                     this.CurrentTask = task;
                     await this.CurrentTask.StartTask();
+
+                    // Consume LoadPluginsTask result on the UI thread..
+                    if (task is LoadPluginsTask lpt && lpt.LoadedPlugins != null)
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            this.Plugins = lpt.LoadedPlugins;
+                            this.SelectedPluginIndex = 0;
+                        });
+                    }
                 }
                 else
                 {
@@ -308,8 +325,9 @@ namespace Steamless.ViewModel
                         throw new Exception("Invalid plugin selected.");
 
                     // Allow the plugin to process the file..
+                    var siblings = this.Plugins.Where(p => p != plugin);
                     if (plugin.CanProcessFile(this.InputFilePath))
-                        this.AddLogMessage(this, !plugin.ProcessFile(this.InputFilePath, this.Options) ? new LogMessageEventArgs("Failed to unpack file.", LogMessageType.Error) : new LogMessageEventArgs("Successfully unpacked file!", LogMessageType.Success));
+                        this.AddLogMessage(this, !plugin.ProcessFile(this.InputFilePath, this.Options, siblings) ? new LogMessageEventArgs("Failed to unpack file.", LogMessageType.Error) : new LogMessageEventArgs("Successfully unpacked file!", LogMessageType.Success));
                     else
                         this.AddLogMessage(this, new LogMessageEventArgs("Failed to unpack file.", LogMessageType.Error));
                 }
