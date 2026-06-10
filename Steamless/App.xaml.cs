@@ -25,13 +25,26 @@
 
 namespace Steamless
 {
+    using Microsoft.Extensions.DependencyInjection;
     using System;
-    using System.Reflection;
 
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App
     {
+        /// <summary>
+        /// Global DI service provider. Built once at startup.
+        /// </summary>
+        public static IServiceProvider Services { get; private set; }
+
+        public App()
+        {
+            Services = new ServiceCollection()
+                .AddSingleton<IDataService, DataService>()
+                .AddSingleton<LoggingService>()
+                .AddSingleton<MainWindowViewModel>()
+                .BuildServiceProvider();
+        }
     }
 }

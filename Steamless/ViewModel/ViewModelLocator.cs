@@ -26,39 +26,24 @@
 namespace Steamless.ViewModel
 {
     using API.Services;
-    using GalaSoft.MvvmLight.Ioc;
-    using Microsoft.Practices.ServiceLocation;
+    using Microsoft.Extensions.DependencyInjection;
     using Model;
 
     public class ViewModelLocator
     {
         /// <summary>
-        /// Default Constructor
-        /// </summary>
-        static ViewModelLocator()
-        {
-            // Setup the locator provider..
-            ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
-
-            // Register our types..
-            SimpleIoc.Default.Register<IDataService, DataService>();
-            SimpleIoc.Default.Register<LoggingService>();
-            SimpleIoc.Default.Register<MainWindowViewModel>();
-        }
-
-        /// <summary>
         /// Gets the main window view model.
         /// </summary>
-        public MainWindowViewModel MainWindow => ServiceLocator.Current.GetInstance<MainWindowViewModel>();
+        public MainWindowViewModel MainWindow => App.Services.GetRequiredService<MainWindowViewModel>();
 
         /// <summary>
         /// Gets the main data service.
         /// </summary>
-        public IDataService DataService => ServiceLocator.Current.GetInstance<IDataService>();
+        public IDataService DataService => App.Services.GetRequiredService<IDataService>();
 
         /// <summary>
         /// Gets the logging service.
         /// </summary>
-        public LoggingService LoggingService => ServiceLocator.Current.GetInstance<LoggingService>();
+        public LoggingService LoggingService => App.Services.GetRequiredService<LoggingService>();
     }
 }
