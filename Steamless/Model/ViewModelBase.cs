@@ -25,11 +25,13 @@
 
 namespace Steamless.Model
 {
+    using API.Model;
+    using CommunityToolkit.Mvvm.ComponentModel;
     using System;
     using System.ComponentModel;
     using System.Windows;
 
-    public abstract class ViewModelBase : NotifiableModel
+    public abstract class ViewModelBase : ObservableObject
     {
         /// <summary>
         /// Default Constructor
@@ -68,11 +70,7 @@ namespace Steamless.Model
         /// <summary>
         /// Gets or sets the internal event handler list.
         /// </summary>
-        private EventHandlerList Events
-        {
-            get => this.Get<EventHandlerList>("Events");
-            set => this.Set("Events", value);
-        }
+        private EventHandlerList Events { get; set; }
 
         /// <summary>
         /// Event to subscribe to to be notified when a view is navigated from.

@@ -26,7 +26,11 @@
 namespace Steamless
 {
     using Microsoft.Extensions.DependencyInjection;
+    using Model;
+    using Steamless.API;
+    using Steamless.API.Services;
     using System;
+    using ViewModel;
 
     /// <summary>
     /// Interaction logic for App.xaml
