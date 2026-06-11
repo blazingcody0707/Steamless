@@ -8,6 +8,7 @@
     <ApplicationIcon>Assets\steam.ico</ApplicationIcon>
     <NoWarn>SYSLIB0021;CS0618</NoWarn>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <TargetFramework>net9.0-windows</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
