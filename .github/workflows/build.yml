@@ -24,6 +24,7 @@ jobs:
             Steamless.CLI/bin/Debug/net9.0/Plugins/**/*.dll
             Steamless/bin/x86/Debug/net9.0-windows/Steamless.exe
             Steamless/bin/x86/Debug/net9.0-windows/*.dll
+            Steamless/bin/x86/Debug/net9.0-windows/*.json
 
   linux:
     runs-on: ubuntu-latest
