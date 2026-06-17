@@ -27,7 +27,7 @@ jobs:
             Steamless/bin/x86/Debug/net9.0-windows/*.json
 
   linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
